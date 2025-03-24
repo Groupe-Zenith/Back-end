@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import dbConnect from "./configs/db";
 import userRoute from "./routes/userRoute";
+import purchaseRequestRoutes from "./routes/purchaseRequestRoute";
 // Chargement des variables d'environnement
 dotenv.config();
 
@@ -19,6 +20,7 @@ dbConnect()
 
 // Définition des routes
 app.use("/auth", userRoute);
+app.use("/purchase-requests", purchaseRequestRoutes);
 
 // Lancement du serveur
 const PORT = process.env.PORT || 5000;

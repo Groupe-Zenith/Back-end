@@ -4,6 +4,8 @@ import jwt from "jsonwebtoken";
 import { sendEmail } from "../utils/mailer";
 import crypto from "crypto";
 import { generateToken } from "../utils/jwt";
+import * as purchaseRequestService from "../services/purchaseRequestService";
+
 const JWT_SECRET = process.env.JWT_SECRET || "secret123";
 const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:3000";
 
@@ -13,7 +15,9 @@ export const registerUser = async (email: string, password: string, first_name: 
   if (existingUser) throw new Error("Cet email est déjà utilisé.");
 
   const hashedPassword = await bcrypt.hash(password, 10);
-  const emailToken = crypto.randomBytes(32).toString("hex");
+  const emailToken = (): number => {
+    return Math.floor(100000 + Math.random() * 900000);
+  };
 
   const user = await User.create({
     email,
@@ -26,7 +30,7 @@ export const registerUser = async (email: string, password: string, first_name: 
   });
 
   // Envoi de l'e-mail de validation
-  await sendEmail(email, "Vérification de votre compte", 
+  await sendEmail(email, `Vérification de votre compte  : ${emailToken}`, 
     `Cliquez ici pour vérifier votre compte : ${FRONTEND_URL}/verify-email?token=${emailToken}`
   );
 
@@ -51,11 +55,19 @@ export const loginUser = async (email: string, password: string) => {
 // Vérification d'email
 export const verifyEmail = async (token: string) => {
   const user = await User.findOne({otp: token });
+  
   if (!user) throw new Error("Token invalide.");
+  if(user.otp !== token){
+    throw new Error('OTP incorrect');
+  }
 
-  user.is_active = true;
+  const request = await purchaseRequestService.createPurchaseRequest({'user_id':user?.id,"reason":'Demande validation compte'});
+  console.log(request);
+  
+  user.is_active = false;
   user.otpVerification = true;
   user.otp = "";
+  
   await user.save();
 
   return "Votre compte a été activé avec succès !";

@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import * as authService from "../services/userServices";
 import { generateToken } from "../utils/jwt";
+
 // Inscription
 export const registerUser = async (req: Request, res: Response) => {
   try {
@@ -34,8 +35,9 @@ export const loginUser = async (req: Request, res: Response) => {
 // Vérification d'e-mail
 export const verifyEmail = async (req: Request, res: Response) => {
   try {
-    const { token } = req.query;
-    const message = await authService.verifyEmail(token as string);
+    const { otp } = req.body;
+    const message = await authService.verifyEmail(otp as string);
+    
     res.status(200).json({ message });
   } catch (error: unknown) { // Type explicite de l'erreur
     if (error instanceof Error) {
