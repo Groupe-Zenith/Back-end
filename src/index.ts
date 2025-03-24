@@ -1,34 +1,27 @@
 import express from "express";
+import mongoose from "mongoose";
 import dotenv from "dotenv";
-import os from "os";
-
+import cors from "cors";
+import dbConnect from "./configs/db";
+import userRoute from "./routes/userRoute";
+// Chargement des variables d'environnement
 dotenv.config();
 
+// Initialisation de l'application Express
 const app = express();
-const PORT = process.env.PORT || 3000;
 
+// Middleware pour analyser le JSON et activer CORS
 app.use(express.json());
+app.use(cors());
 
-// Fonction pour récupérer l'adresse IP locale
-const getLocalIP = (): string => {
-  const interfaces = os.networkInterfaces();
-  for (const name of Object.keys(interfaces)) {
-    for (const net of interfaces[name]!) {
-      if (net.family === "IPv4" && !net.internal) {
-        return net.address;
-      }
-    }
-  }
-  return "127.0.0.1";
-};
+dbConnect()
 
-app.get("/", (req, res) => {
-  res.send("🚀 Hello, TypeScript with Express!");
-});
 
+// Définition des routes
+app.use("/auth", userRoute);
+
+// Lancement du serveur
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  const localIP = getLocalIP();
-  console.log(`\n 🖥️   Server is running on:`);
-  console.log(`     ➜  Local:   http://localhost:${PORT}`);
-  console.log(`     ➜  Network: http://${localIP}:${PORT}\n`);
+  console.log(`🚀 Serveur en cours d'exécution sur http://localhost:${PORT}`);
 });
