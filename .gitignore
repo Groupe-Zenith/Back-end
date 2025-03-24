@@ -1,0 +1,23 @@
+# 📂 Node.js dependencies
+node_modules/
+dist/
+package-lock.json
+
+# 🔥 TypeScript
+*.tsbuildinfo
+
+# 🔐 Environment variables
+.env
+
+# 🛠 Logs & Debug
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# 💻 IDE & OS files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
