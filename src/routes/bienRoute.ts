@@ -1,6 +1,6 @@
 import { Router } from "express";
 import * as bienController from "../controllers/bienController"; // Assure-toi du chemin et de l'orthographe
-
+// bienController.setSocketIoInstance(io)
 const router = Router();
 
 // Routes pour les demandes d'achat

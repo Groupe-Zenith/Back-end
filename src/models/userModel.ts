@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-import { IUser } from "../types/userTypes"; // 📌 Importation du type
+import { IUser } from "../types/userTypes"; 
 
 const UserSchema: Schema = new Schema(
   {

@@ -6,11 +6,11 @@ export const createBiens = async (data: Partial<IBiens>) => {
 };
 
 export const getAllBienss = async () => {
-  return await Biens.find().populate("user_id", "name email");
+  return await Biens.find().populate("user_id");
 };
 
 export const getBiensById = async (id: string) => {
-  return await Biens.findById(id).populate("user_id", "name email");
+  return await Biens.findById(id).populate("user_id");
 };
 
 // export const updateBiens = async (id: string, data: Partial<IBiens>) => {

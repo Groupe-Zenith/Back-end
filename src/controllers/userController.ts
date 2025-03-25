@@ -5,10 +5,10 @@ import { generateToken } from "../utils/jwt";
 // Inscription
 export const registerUser = async (req: Request, res: Response) => {
   try {
-    const { email, password, first_name, last_name } = req.body;
-    const user = await authService.registerUser(email, password, first_name, last_name);
-    res.status(201).json({ message: "Utilisateur créé. Vérifiez votre e-mail.", user });
-  } catch (error: unknown) { // Type explicite de l'erreur
+    const { email, password, first_name, last_name , role } = req.body;
+    const user = await authService.registerUser(email, password, first_name, last_name , role);
+    res.status(200).json({ message: "Utilisateur créé. Vérifiez votre e-mail.", user });
+  } catch (error: unknown) { 
     if (error instanceof Error) {
       res.status(400).json({ message: error.message });
     } else {
@@ -17,13 +17,12 @@ export const registerUser = async (req: Request, res: Response) => {
   }
 };
 
-// Connexion
 export const loginUser = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
     const result = await authService.loginUser(email, password);
     res.status(200).json(result);
-  } catch (error: unknown) { // Type explicite de l'erreur
+  } catch (error: unknown) { 
     if (error instanceof Error) {
       res.status(400).json({ message: error.message });
     } else {

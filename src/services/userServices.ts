@@ -5,33 +5,31 @@ import { sendEmail } from "../utils/mailer";
 import crypto from "crypto";
 import { generateToken } from "../utils/jwt";
 import * as purchaseRequestService from "../services/purchaseRequestService";
+import { getSocketInstance } from "../services/socketService";
 
 const JWT_SECRET = process.env.JWT_SECRET || "secret123";
-const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:3000";
+const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173/";
 
 // Inscription
-export const registerUser = async (email: string, password: string, first_name: string, last_name: string) => {
+export const registerUser = async (email: string, password: string, first_name: string, last_name: string , role : string) => {
   const existingUser = await User.findOne({ email });
   if (existingUser) throw new Error("Cet email est déjà utilisé.");
 
   const hashedPassword = await bcrypt.hash(password, 10);
-  const emailToken = (): number => {
-    return Math.floor(100000 + Math.random() * 900000);
-  };
+  const emailToken = crypto.randomInt(100000, 999999).toString();
 
   const user = await User.create({
     email,
     password_hash: hashedPassword,
     first_name,
     last_name,
-    role: "user",
+    role: role,
     is_active: false,
     otp: emailToken
   });
 
-  // Envoi de l'e-mail de validation
   await sendEmail(email, `Vérification de votre compte  : ${emailToken}`, 
-    `Cliquez ici pour vérifier votre compte : ${FRONTEND_URL}/verify-email?token=${emailToken}`
+    `Cliquez ici pour vérifier votre compte : ${FRONTEND_URL}`
   );
 
   return user;
@@ -54,20 +52,35 @@ export const loginUser = async (email: string, password: string) => {
 
 // Vérification d'email
 export const verifyEmail = async (token: string) => {
-  const user = await User.findOne({otp: token });
+  const user = await User.findOne({ otp: token });
   
   if (!user) throw new Error("Token invalide.");
-  if(user.otp !== token){
+  if (user.otp !== token) {
     throw new Error('OTP incorrect');
   }
 
-  const request = await purchaseRequestService.createPurchaseRequest({'user_id':user?.id,"reason":'Demande validation compte'});
-  console.log(request);
-  
+  // Création de la demande d'achat
+  const request = await purchaseRequestService.createPurchaseRequest({
+    user_id: user._id as any,
+    reason: 'Demande validation compte',
+  });
+  console.log("✅ Demande d'achat créée :", request);
+  const PurchaseRequest = await purchaseRequestService.getPurchaseRequestByStatus("pending");
+          
+
+  // Émission de l'événement via Socket.IO
+  try {
+    const io = getSocketInstance();
+    io.emit("PurchaseRequest", PurchaseRequest); // Envoi à tous les clients connectés
+    console.log("📤 Événement 'PurchaseRequestData' envoyé avec succès !");
+  } catch (error) {
+    console.error("❗ Erreur lors de l'émission de l'événement Socket.IO :", error);
+  }
+
+  // Mise à jour de l'utilisateur
   user.is_active = false;
   user.otpVerification = true;
   user.otp = "";
-  
   await user.save();
 
   return "Votre compte a été activé avec succès !";

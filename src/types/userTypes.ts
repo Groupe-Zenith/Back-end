@@ -11,8 +11,8 @@ export interface IUser extends Document {
   last_name: string;
   role: UserRole;
   is_active: boolean;
-  otp: string, // Code OTP temporaire
-  otpVerification: boolean;// Vérification OTP
+  otp: string, 
+  otpVerification: boolean;
   created_at: Date;
   updated_at: Date;
 }

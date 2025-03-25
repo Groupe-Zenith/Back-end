@@ -12,6 +12,10 @@ export const getAllPurchaseRequests = async () => {
 export const getPurchaseRequestById = async (id: string) => {
   return await PurchaseRequest.findById(id).populate("user_id", "name email");
 };
+export const getPurchaseRequestByStatus = async (status: string) => {
+  return await PurchaseRequest.find({ status }).populate("user_id");
+};
+
 
 // export const updatePurchaseRequest = async (id: string, data: Partial<IPurchaseRequest>) => {
 //   return await PurchaseRequest.findByIdAndUpdate(id, data, { new: true });

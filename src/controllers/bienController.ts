@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import * as biensService from "../services/biensService";
+import { getSocketInstance } from "../services/socketService";
 
 export const create = async (
   req: Request,
@@ -8,6 +9,9 @@ export const create = async (
 ): Promise<void> => {
   try {
     const request = await biensService.createBiens(req.body);
+
+    // Envoyer une notification à tous les clients
+    
     res.status(201).json(request);
   } catch (error) {
     next(error); // Passe l'erreur à Express

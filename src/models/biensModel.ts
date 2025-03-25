@@ -1,16 +1,16 @@
 import { Schema, model } from "mongoose";
 import { IBiens } from "../types/biensType";
 
-const PurchaseRequestSchema = new Schema<IBiens>(
+const BienSchema = new Schema<IBiens>(
   {
-    labelBien: {String, required: true},
-    number: {Number, required: false},
+    labelBien: {type :String, required: true},
+    number: {type:Number, required: false},
     state: {type:String,enum: ["damager", "New","lost"], required: false},
-    description: {String, required: true},
-    numberdamaged: {Number, required: false},
-    numberlost: {Number, required: false},
+    description: {type:String, required: true},
+    numberdamaged: {type:Number, required: false},
+    numberlost: {type:Number, required: false},
   },
   { timestamps: true }
 );
 
-export default model<IBiens>("PurchaseRequest", PurchaseRequestSchema);
+export default model<IBiens>("Bien", BienSchema);
