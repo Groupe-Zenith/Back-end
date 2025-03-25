@@ -9,7 +9,7 @@ const PurchaseRequestSchema = new Schema<IPurchaseRequest>(
     reason: { type: String, required: true },
     status: {
       type: String,
-      enum: ["pending", "approved", "rejected"],
+      enum: ["pending", "approved", "rejected","delivered"],
       default: "pending",
     },
     admin_comment: { type: String ,required:false},

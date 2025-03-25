@@ -1,6 +1,6 @@
-import { Types } from "mongoose";
+import { Types,Document } from "mongoose";
 
-export interface IPurchaseRequest {
+export interface IPurchaseRequest extends Document {
   user_id: Types.ObjectId; // ✅ Correction ici
   item_name: string;
   quantity: number;
