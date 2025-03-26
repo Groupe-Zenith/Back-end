@@ -8,13 +8,16 @@ import dbConnect from "./configs/db";
 import userRoute from "./routes/userRoute";
 import purchaseRequestRoutes from "./routes/purchaseRequestRoute";
 import { initSocket } from "./services/socketService";
+import bodyParser from "body-parser";
+
+
 // Chargement des variables d'environnement
 dotenv.config();
 
 // Initialisation de l'application Express
 const app = express();
 const server = http.createServer(app); // Création du serveur HTTP
-
+app.use(bodyParser.json());
 
 // Middleware pour analyser le JSON et activer CORS
 app.use(express.json());
