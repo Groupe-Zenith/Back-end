@@ -7,7 +7,7 @@ package-lock.json
 *.tsbuildinfo
 
 # 🔐 Environment variables
-.env
+
 
 # 🛠 Logs & Debug
 logs/
