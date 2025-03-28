@@ -1,6 +1,7 @@
 import { Server } from "socket.io";
 import { Server as HttpServer } from "http";
 import { getPurchaseRequestByStatus,createPurchaseRequest,getPurchaseRequestByIdUser,updatePurchaseRequestStatus } from "./purchaseRequestService";
+import {createOrder} from '../services/orderService'; 
 let io: Server;
 
 export const initSocket = (server: HttpServer) => {
@@ -34,6 +35,8 @@ export const initSocket = (server: HttpServer) => {
     }
   });
   
+ 
+
     socket.on("createPurchaseRequest", async (data) => {
         try {
           console.log("📥 Données reçues :", data);
