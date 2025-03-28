@@ -18,6 +18,19 @@ export const getPurchaseRequestByStatus = async (status: string) => {
 };
 
 
+export const updatePurchaseRequestStatus = async (id: string, status: string) => {
+  if (!["pending", "approved", "rejected", "delivered"].includes(status)) {
+    throw new Error("Statut invalide");
+  }
+  
+  return await PurchaseRequest.findByIdAndUpdate(
+    id,
+    { status },
+    { new: true }
+  );
+};
+
+
 // export const updatePurchaseRequest = async (id: string, data: Partial<IPurchaseRequest>) => {
 //   return await PurchaseRequest.findByIdAndUpdate(id, data, { new: true });
 // };

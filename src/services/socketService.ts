@@ -1,6 +1,6 @@
 import { Server } from "socket.io";
 import { Server as HttpServer } from "http";
-import { getPurchaseRequestByStatus,createPurchaseRequest,getPurchaseRequestByIdUser } from "./purchaseRequestService";
+import { getPurchaseRequestByStatus,createPurchaseRequest,getPurchaseRequestByIdUser,updatePurchaseRequestStatus } from "./purchaseRequestService";
 let io: Server;
 
 export const initSocket = (server: HttpServer) => {
@@ -14,8 +14,8 @@ export const initSocket = (server: HttpServer) => {
   io.on("connection", (socket) => {
     console.log(`🔵 Client connecté : ${socket.id}`);
 
-    socket.on("getAllPurchaseRequest", async () => {
-        const PurchaseRequest = await getPurchaseRequestByStatus("pending");
+    socket.on("getAllPurchaseRequest", async (status:string) => {
+        const PurchaseRequest = await getPurchaseRequestByStatus(status);
         
         socket.emit("PurchaseRequest", PurchaseRequest);
     });
@@ -23,6 +23,17 @@ export const initSocket = (server: HttpServer) => {
       const PurchaseRequestUser = await getPurchaseRequestByIdUser(user_id);
       socket.emit("PurchaseRequestUser", PurchaseRequestUser);
   });
+
+  socket.on("updateStatus", async ({ requestId, newStatus }) => {
+    try {
+      const updatedRequest = await updatePurchaseRequestStatus(requestId, newStatus);
+      const PurchaseRequest = await getPurchaseRequestByStatus('pending');
+      socket.emit("PurchaseRequest", PurchaseRequest);
+    } catch (error) {
+      socket.emit("error", { message: "Erreur lors de la mise à jour du statut" });
+    }
+  });
+  
     socket.on("createPurchaseRequest", async (data) => {
         try {
           console.log("📥 Données reçues :", data);
