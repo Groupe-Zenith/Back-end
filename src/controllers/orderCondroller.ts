@@ -1,6 +1,6 @@
 // orderController.ts
 import { Request, Response } from 'express';
-import { createOrder, updateOrder } from '../services/orderService';
+import { createOrder, updateOrder,getAllOrders } from '../services/orderService';
 import { upload } from '../configs/multer';  // Importer la configuration Multer
 
 // Créer une commande avec photo (si présente)
@@ -60,5 +60,14 @@ const updateOrderController = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Erreur lors de la mise à jour de la commande', error });
   }
 };
+// Récupérer toutes les commandes
+export const getAllOrdersController = async (req: Request, res: Response) => {
+    try {
+      const orders = await getAllOrders();
+      res.status(200).json(orders);
+    } catch (error) {
+      res.status(500).json({ message: error instanceof Error ? error.message : 'Erreur inconnue' });
+    }
+  };
 
 export { createOrderController, updateOrderController };

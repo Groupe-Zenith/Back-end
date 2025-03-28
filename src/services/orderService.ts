@@ -29,5 +29,17 @@ const createOrder = async (orderData: Partial<Order>) => {
       throw new Error('Erreur inconnue lors de la mise à jour de la commande');
     }
   };
+  // Récupérer toutes les commandes
+const getAllOrders = async () => {
+    try {
+      const orders = await OrderModel.find();
+      return orders;
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new Error('Erreur lors de la récupération des commandes : ' + error.message);
+      }
+      throw new Error('Erreur inconnue lors de la récupération des commandes');
+    }
+  };
   
-export { createOrder, updateOrder };
+export { createOrder, updateOrder,getAllOrders };
